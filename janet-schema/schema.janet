@@ -86,13 +86,13 @@
 (def year-pattern '(between 4 4 (range "09")))
 (def month-pattern '(+ (* "0" (range "19")) (* "1" (range "02"))))
 (def day-pattern '(+ (* "0" (range "19")) (* (range "12") (range "09")) (* "3" (range "01"))))
-(def hour-pattern '(+ (* "0" (range "19")) (* "1" (range "02"))))
+(def hour-pattern '(+ (* "0" (range "09")) (* "1" (range "09")) (* "2" (range "03"))))
 (def minute-pattern '(+ (* "0" (range "09")) (* (range "15") (range "09"))))
 (def second-pattern '(+ (* "0" (range "09")) (* (range "15") (range "09"))))
 (def ms-pattern '(between 3 3 (range "09")))
 (def date-pattern ~(* ,year-pattern "-" ,month-pattern "-" ,day-pattern))
-(def time-pattern ~(* ,hour-pattern ":" ,minute-pattern ":" ,second-pattern ":" ,ms-pattern "Z"))
-(def datetime-pattern ~(* ,date-pattern "T" ,time-pattern))
+(def time-pattern ~(* ,hour-pattern ":" ,minute-pattern ":" ,second-pattern "." ,ms-pattern))
+(def datetime-pattern ~(* ,date-pattern "T" ,time-pattern "Z"))
 
 (define :nil
   {:type-is-valid nil?})

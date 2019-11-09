@@ -1,5 +1,5 @@
-(use janet-schema/schema)
 (use assert)
+(use janet-schema/schema)
 
 # Handles tuples, and does not recur
 (assert= (normalize [{:x :int}]) {:t :sequence :items {:x :int}})

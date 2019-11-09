@@ -56,6 +56,13 @@
 (assert-type-error (get-error :date "2019-31-12"))
 (assert-type-error (get-error :date nil))
 
+# time
+(assert= nil (get-error :time "00:00:00.000"))
+(assert= nil (get-error :time "23:59:59.000"))
+(assert-type-error (get-error :time "28:12:19.102"))
+(assert-type-error (get-error :time "23:59:59.0000"))
+(assert-type-error (get-error :time nil))
+
 # (define :time
 #   {:type-is-valid |(peg/match time-pattern $)})
 
