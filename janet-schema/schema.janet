@@ -17,7 +17,7 @@
        (comma-join res)
        (string (comma-join (take 2 res)) " ...and " (- len 3) " more")))
    (map? target)
-   (comma-join (map |(string $1 ": " (summarize $2 (dec depth))) (pairs target)))
+   (comma-join (map (fn [[k v]] (string k ": " (summarize v (dec depth)))) (pairs target)))
    true (string/format "%q" target)))
 
 # Schema
@@ -43,8 +43,12 @@
    # All else is invalid
    true (error (string/format "Got invalid schema: %q" schema))))
 
+(defn check-schema [schema]
+  (error "Not implemented"))
+
 (defn iter-errors [schema data path]
-  (let [{:t t :enum enum} (normalize schema)
+  (let [schema (normalize schema)
+        {:t t :enum enum} schema
         typedef (type-registry t)
         type-is-valid (typedef :type-is-valid)
         iter-type-errors (typedef :iter-type-errors)]
@@ -73,7 +77,7 @@
   (resume (fiber/new |(iter-errors schema data (or path [])))))
 
 (defn peg-validator [pattern]
-  (let [pattern (peg/compile pattern)]
+  (let [pattern (peg/compile ~(* ,pattern -1))]
     |(and (string? $) (peg/match pattern $))))
 
 (def uuid-pattern
@@ -81,7 +85,7 @@
     :digit4 (between 4 4 :digit)
     :digit8 (between 8 8 :digit)
     :digit12 (between 12 12 :digit)
-    :main (* :digit8 "-" :digit4 "-" :digit4 "-" :digit4 "-" :digit12)})
+    :main (* :digit8 "-" :digit4 "-" :digit4 "-" :digit4 "-" :digit12 -1)})
 
 (def year-pattern '(between 4 4 (range "09")))
 (def month-pattern '(+ (* "0" (range "19")) (* "1" (range "02"))))
@@ -134,8 +138,8 @@
   {:type-is-valid sequence?
    :iter-type-errors
    (fn [schema data path]
-     (let [items (get schema :items [])]
-       (map-indexed data |(iter-errors items $0 [;path $1]))))})
+     (let [items-schema (get schema :items :any)]
+       (map-indexed |(iter-errors items-schema $0 [;path $1]) data)))})
 
 (define :map
   {:type-is-valid map?
@@ -164,37 +168,3 @@
                :expected :nil
                :actual (type v)
                :message (string k " is not an allowed property")}))))))})
-
-# export default new Proxy(
-#   {
-#     ...ERROR_CODE,
-#     arr: (items, meta) => new Schema("arr", {items, ...meta}),
-#     obj: (properties, meta) => new Schema("obj", {properties, ...meta}),
-#     open: schema => cloneSchema(schema, {closed: false}),
-#     closed: schema => cloneSchema(schema, {closed: true}),
-#     strict: schema => {
-#       const normalizedSchema = normalize(schema)
-#       const requiredKeys = Object.keys(normalizedSchema.properties)
-
-#       return cloneSchema(normalizedSchema, {requiredKeys})
-#     },
-#   },
-#   {
-#     get(target, name) {
-#       if (target[name]) {
-#         return target[name]
-#       }
-
-#       const isCapitalized = Boolean(name.match(/^[A-Z][a-z]+$/))
-#       const T = allTypes[name.toLowerCase()]
-
-#       if (!T) {
-#         throw new Error(`Invalid schema property ${name}`)
-#       }
-
-#       // If it starts with a capital letter they're treating it as a type,
-#       // if it's lower case, they're treating it as a builder function
-#       return isCapitalized ? T.schema : T.create
-#     },
-#   }
-# )

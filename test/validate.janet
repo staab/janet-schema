@@ -1,8 +1,10 @@
-(use assert)
+(use janet-assert/assert)
 (use janet-schema/schema)
 
 (defn assert-type-error [err]
   (assert= :type-error (err :code)))
+
+# standalone schema validation
 
 # nil
 (assert= nil (get-error :nil nil))
@@ -63,77 +65,22 @@
 (assert-type-error (get-error :time "23:59:59.0000"))
 (assert-type-error (get-error :time nil))
 
-# (define :time
-#   {:type-is-valid |(peg/match time-pattern $)})
+# datetime
+(assert= nil (get-error :datetime "2019-02-29T08:10:00.023Z"))
+(assert-type-error (get-error :datetime "2019-02-29 08:10:00.023"))
+(assert-type-error (get-error :datetime "23:59:59.000"))
+(assert-type-error (get-error :datetime nil))
 
-# (define :datetime
-#   {:type-is-valid |(peg/match datetime-pattern $)})
+# sequence
+(assert= nil (get-error :sequence []))
+(assert= nil (get-error :sequence @[]))
+(assert= nil (get-error :sequence [1 2 3]))
+(assert-type-error (get-error :sequence "asdf"))
+(assert-type-error (get-error :sequence {:a 1}))
 
-# (define :sequence
-#   {:type-is-valid sequence?
-#    :iter-type-errors
-#    (fn [schema data path]
-#      (let [items (get schema :items [])]
-#        (map-indexed data |(iter-errors items $0 [;path $1]))))})
-
-# (define :map
-#   {:type-is-valid map?
-#    :iter-type-errors
-#    (fn [schema data path]
-#      (let [required (get schema :required [])
-#            props (get schema :properties {})
-#            closed (get schema :closed false)]
-#        (each k required
-#          (when (nil? (data k))
-#            (yield
-#             {:path [;path k]
-#              :code :missing-property
-#              :expected (get-in schema [k :t])
-#              :actual :nil
-#              :message (string k " is a required property")})))
-#        (each [k prop-schema] (pairs props)
-#          (when (not (nil? (data k)))
-#            (iter-errors prop-schema (data k) [;path k])))
-#        (when closed
-#          (each [k v] (pairs data)
-#            (when (not (nil? (props k)))
-#              (yield
-#               {:path [;path k]
-#                :code :extra-property
-#                :expected :nil
-#                :actual (type v)
-#                :message (string k " is not an allowed property")}))))))})
-
-# # export default new Proxy(
-# #   {
-# #     ...ERROR_CODE,
-# #     arr: (items, meta) => new Schema("arr", {items, ...meta}),
-# #     obj: (properties, meta) => new Schema("obj", {properties, ...meta}),
-# #     open: schema => cloneSchema(schema, {closed: false}),
-# #     closed: schema => cloneSchema(schema, {closed: true}),
-# #     strict: schema => {
-# #       const normalizedSchema = normalize(schema)
-# #       const requiredKeys = Object.keys(normalizedSchema.properties)
-
-# #       return cloneSchema(normalizedSchema, {requiredKeys})
-# #     },
-# #   },
-# #   {
-# #     get(target, name) {
-# #       if (target[name]) {
-# #         return target[name]
-# #       }
-
-# #       const isCapitalized = Boolean(name.match(/^[A-Z][a-z]+$/))
-# #       const T = allTypes[name.toLowerCase()]
-
-# #       if (!T) {
-# #         throw new Error(`Invalid schema property ${name}`)
-# #       }
-
-# #       // If it starts with a capital letter they're treating it as a type,
-# #       // if it's lower case, they're treating it as a builder function
-# #       return isCapitalized ? T.schema : T.create
-# #     },
-# #   }
-# # )
+# map
+(assert= nil (get-error :map {}))
+(assert= nil (get-error :map @{}))
+(assert= nil (get-error :map {:a 1}))
+(assert-type-error (get-error :map "asdf"))
+(assert-type-error (get-error :map [1 2 3]))

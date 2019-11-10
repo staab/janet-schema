@@ -1,4 +1,4 @@
-(use assert)
+(use janet-assert/assert)
 (use janet-schema/schema)
 
 # Handles tuples, and does not recur
