@@ -1,10 +1,11 @@
-(use janet-assert/assert)
-(use janet-schema/schema)
+(use staab.assert/assert)
+(use staab.schema/schema)
 
 (defn assert-type-error [err]
   (assert= :type-error (err :code)))
 
 # standalone schema validation
+()
 
 # nil
 (assert= nil (get-error :nil nil))

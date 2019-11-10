@@ -4,4 +4,4 @@
  :dependencies ["https://github.com/staab/janet-assert.git"])
 
 (declare-source
-  :source ["janet-schema/schema.janet"])
+  :source ["staab.schema"])
