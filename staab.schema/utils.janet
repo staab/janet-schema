@@ -2,7 +2,20 @@
 (defn map? [x] (or (table? x) (struct? x)))
 (defn comma-join [xs] (string/join xs ", "))
 (defn always [x] (fn [& args] x))
-(defn map-indexed [f xs] (for i 0 (dec (length xs)) (f (xs i) i)))
+(defn when-not [c & body] (when (not c) ;body))
+(defn no-op [& args])
+
+(defn map-indexed [f xs]
+  (let [result @[]]
+    (for i 0 (dec (length xs))
+      (array/push result (f (xs i) i)))
+    (tuple ;result)))
+
+(defn get-path [data [head tail] path]
+  (cond
+   (= head "[]") (map-indexed |(do {}) data))))
+
+(defmacro errfmt [& args] ~(error (string/format ,;args)))
 
 (defn summarize [target &opt depth]
   (default depth 3)
