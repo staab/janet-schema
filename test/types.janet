@@ -1,5 +1,5 @@
 (use staab.assert/assert)
-(use staab/schema)
+(use staab.schema/schema)
 
 (defn assert-type-error [err]
   (assert= :type-error (err :code)))

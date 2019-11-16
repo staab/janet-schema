@@ -6,4 +6,4 @@
                 "https://github.com/staab/janet-multimethod.git"])
 
 (declare-source
-  :source ["staab"])
+  :source ["staab.schema"])
