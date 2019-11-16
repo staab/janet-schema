@@ -1,6 +1,6 @@
 (use staab.schema/utils)
-(use staab.schema/multi)
-(import staab.schema/set :as set)
+(use staab/multimethod)
+(import staab/pseudo-set :as set)
 
 
 # -----------------------------------------------------------------------------
