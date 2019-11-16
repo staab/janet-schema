@@ -1,4 +1,4 @@
-(use staab.schema/utils)
+(use local/utils)
 (use staab/multimethod)
 (import staab/pseudo-set :as set)
 

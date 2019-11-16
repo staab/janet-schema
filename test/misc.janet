@@ -1,5 +1,5 @@
 (use staab.assert/assert)
-(use staab.schema/schema)
+(use staab/schema)
 
 # standalone schema validation
 (assert= nil (check-schema {:a 1}))

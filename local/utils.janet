@@ -12,11 +12,6 @@
       (array/push result [i (xs i)]))
   result))
 
-(defn map-indexed [f xs]
-  (map
-   (fn [[k v]] (f k v))
-   (if (dictionary? xs) (pairs xs) (enumerate xs))))
-
 (def- slice-pattern (peg/compile '(* "[" (<- (any (range "09"))) ":" (<- (any (range "09"))) "]" -1)))
 
 (defn- get-slice-indexes [str]
