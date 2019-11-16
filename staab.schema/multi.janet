@@ -1,7 +1,7 @@
 # Get-meta is a sentinel value that allows us to return meta
 (def- $get-meta (gensym))
 
-(defn define
+(defn multimethod
   [dispatch]
   (let [methods @{}
         meta {:dispatch dispatch :methods methods}]
@@ -17,7 +17,7 @@
 (defmacro defmulti
   [name & opts]
   (let [[docstring dispatch] (if (string? (first opts)) opts [(string name) ;opts])]
-    ~(def ,name ,docstring (define ,dispatch))))
+    ~(def ,name ,docstring (multimethod ,dispatch))))
 
 (defn add-method
   [mm k f]
