@@ -104,7 +104,7 @@
              :message (string k " is a required property")})))
        (when closed
          (each [k v] (pairs data)
-           (when (not (nil? (props k)))
+           (when (nil? (props k))
              (yield
               {:path [;path k]
                :code :extra-property

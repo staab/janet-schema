@@ -86,3 +86,4 @@
 (assert-type-error (get-error :map "asdf"))
 (assert-type-error (get-error :map [1 2 3]))
 (assert-type-error (get-error {:a :str} {:a 1}))
+(assert= :extra-property ((get-error {:t :map :closed true} {:a 1}) :code))

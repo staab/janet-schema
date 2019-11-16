@@ -19,3 +19,4 @@
  (get-error
    {:t :map :constraints [{:t :intersection :search [:a "[:]"] :target [:b "[:]"]}]}
    {:a [1 3] :b [1 2 3]}))
+
