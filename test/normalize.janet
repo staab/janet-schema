@@ -1,8 +1,8 @@
 (use staab.assert/assert)
-(use staab.schema/schema)
+(use staab.schema/check)
 
 # Handles tuples, and does not recur
-(assert= (normalize [{:x :int}]) {:t :sequence :items {:x :int}})
+(assert= (normalize [{:x :int}]) {:t :seq :items {:x :int}})
 
 # Handles structs, and does not recur
 (assert= (normalize {:x [:int]}) {:t :map :properties {:x [:int]}})

@@ -1,25 +1,25 @@
 (use staab.schema/utils)
 (use staab.schema/multi)
+(use staab.schema/constraints)
 (import staab.schema/types :as types)
-(import staab.schema/constraints :as constraints)
 
 (defn normalize [schema]
   (cond
    # If it's a schema, we're good
-   (and (map? schema) (schema :t)) schema
+   (and (dictionary? schema) (schema :t)) schema
    # If it's just a type keyword turn it into an object
    (keyword? schema) {:t schema}
-   # Arrays are a special case
-   (sequence? schema) {:t :sequence :items (first schema)}
-   # Objects are a special case
-   (map? schema) {:t :map :properties schema}
+   # Sequences are a special case
+   (indexed? schema) {:t :seq :items (first schema)}
+   # Dictionaries are a special case
+   (dictionary? schema) {:t :map :properties schema}
    # All else is invalid
    true (error (string/format "Got invalid schema: %q" schema))))
 
 (defn check-schema [schema]
-  (error "Not implemented"))
+  (print "WARNING: schema validation is not implemented"))
 
-(defn iter-errors [schema data path]
+(defn check-data [schema data path]
   (let [schema (normalize schema)
         {:t t :enum enum} schema
         typedef (types/type-registry t)
@@ -49,10 +49,10 @@
     # Recur into child schemas/data
     (loop [tup :generate (fiber/new |(iter-child-tuples schema data))]
       (if-let [[child-schema child k] tup]
-        (iter-errors child-schema child [;path k])))
+        (check-data child-schema child [;path k])))
     # Check that all constraints hold
     (each constraint (get schema :constraints [])
-      (constraints/iter-constraint-errors constraint data))))
+      (iter-constraint-errors constraint data))))
 
 (defn get-error [schema data &opt path]
-  (resume (fiber/new |(iter-errors schema data (or path [])))))
+  (resume (fiber/new |(check-data schema data (or path [])))))

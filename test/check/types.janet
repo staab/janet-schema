@@ -1,11 +1,8 @@
 (use staab.assert/assert)
-(use staab.schema/schema)
+(use staab.schema/check)
 
 (defn assert-type-error [err]
   (assert= :type-error (err :code)))
-
-# standalone schema validation
-()
 
 # nil
 (assert= nil (get-error :nil nil))
@@ -72,16 +69,20 @@
 (assert-type-error (get-error :datetime "23:59:59.000"))
 (assert-type-error (get-error :datetime nil))
 
-# sequence
-(assert= nil (get-error :sequence []))
-(assert= nil (get-error :sequence @[]))
-(assert= nil (get-error :sequence [1 2 3]))
-(assert-type-error (get-error :sequence "asdf"))
-(assert-type-error (get-error :sequence {:a 1}))
+# seq
+(assert= nil (get-error :seq []))
+(assert= nil (get-error :seq @[]))
+(assert= nil (get-error :seq [1 2 3]))
+(assert= nil (get-error [:int] [1 2 3]))
+(assert-type-error (get-error :seq "asdf"))
+(assert-type-error (get-error :seq {:a 1}))
+(assert-type-error (get-error [:int] [{:a 1}]))
 
 # map
 (assert= nil (get-error :map {}))
 (assert= nil (get-error :map @{}))
 (assert= nil (get-error :map {:a 1}))
+(assert= nil (get-error {:a :int} {:a 1}))
 (assert-type-error (get-error :map "asdf"))
 (assert-type-error (get-error :map [1 2 3]))
+(assert-type-error (get-error {:a :str} {:a 1}))

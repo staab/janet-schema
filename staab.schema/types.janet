@@ -66,15 +66,16 @@
 (define :datetime
   {:type-is-valid (peg-validator datetime-pattern)})
 
-(define :sequence
-  {:type-is-valid sequence?
+(define :seq
+  {:type-is-valid indexed?
    :iter-child-tuples
    (fn [schema data]
      (let [child-schema (get schema :items :any)]
-       (map-indexed |(yield [child-schema $0 $1]) data)))})
+       (each [i x] (enumerate data)
+         (yield [child-schema x i]))))})
 
 (define :map
-  {:type-is-valid map?
+  {:type-is-valid dictionary?
    :iter-child-tuples
    (fn [schema data]
      (let [props (get schema :properties {})]
