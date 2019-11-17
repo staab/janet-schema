@@ -6,7 +6,7 @@ A schema library for Janet, inspired by plumatic/schema and jsonschema.
 
 - [x] Basic type validation
 - [x] Basic constraint validation
-- [ ] Schema validation
+- [ ] Schema (meta) validation
 - [ ] Data coercion based on given schema and coercer
 
 # Usage
@@ -80,6 +80,20 @@ Paths are the key part of constraints; in general they should be integer indexes
    {:a [1 2 3] :b [1 2 3]}))
 # => {:message "1 is not contained in the search path" ...}
 ```
+
+## Extending
+
+### Types
+
+New types can be created using `define-type`, which takes a type keyword and the following options:
+
+- `:type-is-valid` defines whether data is valid for the given type.
+- `:iter-child-tuples` yields a tuple of `[child-schema child-data child-key]` tuples for recursive validation. This is wrapped in a fiber for iteration.
+- `:iter-type-errors` yields any additional errors necessary for validating the type.
+
+### Constraints
+
+New constraints can be added by registering a method on the `:iter-constraint-errors` multimethod, which dispatches on the constraint's `:t` property. The registered function should take the desired constraint and the data corresponding to the place in the schema where the constraint was invoked. Constraint functions should yield any errors discovered, as they are wrapped in a fiber for iteration.
 
 # Disclaimer
 

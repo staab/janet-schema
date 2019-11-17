@@ -9,7 +9,7 @@
 
 (var type-registry @{})
 
-(defn define [name &opt opts]
+(defn define-type [name &opt opts]
   (let [typedef (merge opts {:name name :schema {:t name}})]
     (when (nil? (typedef :type-is-valid))
       (error ":type-is-valid is required when defining a schema type"))
@@ -37,43 +37,43 @@
 (def time-pattern ~(* ,hour-pattern ":" ,minute-pattern ":" ,second-pattern "." ,ms-pattern))
 (def datetime-pattern ~(* ,date-pattern "T" ,time-pattern "Z"))
 
-(define :nil
+(define-type :nil
   {:type-is-valid nil?})
 
-(define :any
+(define-type :any
   {:type-is-valid (always true)})
 
-(define :int
+(define-type :int
   {:type-is-valid int?})
 
-(define :num
+(define-type :num
   {:type-is-valid number?})
 
-(define :str
+(define-type :str
   {:type-is-valid string?})
 
-(define :bool
+(define-type :bool
   {:type-is-valid boolean?})
 
-(define :true
+(define-type :true
   {:type-is-valid |(= $ true)})
 
-(define :false
+(define-type :false
   {:type-is-valid |(= $ false)})
 
-(define :uuid
+(define-type :uuid
   {:type-is-valid (peg-validator uuid-pattern)})
 
-(define :date
+(define-type :date
   {:type-is-valid (peg-validator date-pattern)})
 
-(define :time
+(define-type :time
   {:type-is-valid (peg-validator time-pattern)})
 
-(define :datetime
+(define-type :datetime
   {:type-is-valid (peg-validator datetime-pattern)})
 
-(define :seq
+(define-type :seq
   {:type-is-valid indexed?
    :iter-child-tuples
    (fn [schema data]
@@ -81,7 +81,7 @@
        (each [i x] (enumerate data)
          (yield [child-schema x i]))))})
 
-(define :map
+(define-type :map
   {:type-is-valid dictionary?
    :iter-child-tuples
    (fn [schema data]
