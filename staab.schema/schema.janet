@@ -171,7 +171,8 @@
 # Data validation utils
 
 
-(defn check-data [schema data path]
+(defn check-data [schema data &opt path]
+  (default path [])
   (let [schema (normalize schema)
         {:t t :enum enum} schema
         typedef (type-registry t)

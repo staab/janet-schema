@@ -81,6 +81,14 @@ Paths are the key part of constraints; in general they should be integer indexes
 # => {:message "1 is not contained in the search path" ...}
 ```
 
+## Iteration
+
+If a single error is desired, `get-error` works great. If more than one error is desired, you can use `check-data`, which directly yields errors to the parent fiber. To control this, call it via a fiber, e.g.,
+
+```
+(loop [error :generate (fiber/new |(check-data schema data)))] ...)
+```
+
 ## Extending
 
 ### Types
@@ -88,12 +96,14 @@ Paths are the key part of constraints; in general they should be integer indexes
 New types can be created using `define-type`, which takes a type keyword and the following options:
 
 - `:type-is-valid` defines whether data is valid for the given type.
-- `:iter-child-tuples` yields a tuple of `[child-schema child-data child-key]` tuples for recursive validation. This is wrapped in a fiber for iteration.
+- `:iter-child-tuples` yields a tuple of `[child-schema child-data child-key]` tuples for recursive validation.
 - `:iter-type-errors` yields any additional errors necessary for validating the type.
 
 ### Constraints
 
-New constraints can be added by registering a method on the `:iter-constraint-errors` multimethod, which dispatches on the constraint's `:t` property. The registered function should take the desired constraint and the data corresponding to the place in the schema where the constraint was invoked. Constraint functions should yield any errors discovered, as they are wrapped in a fiber for iteration.
+New constraints can be added by registering a method on the `iter-constraint-errors` multimethod, which dispatches on the constraint's `:t` property.
+
+The registered function should take the desired constraint and the data corresponding to the place in the schema where the constraint was invoked. Constraint functions should yield any errors discovered.
 
 # Disclaimer
 
