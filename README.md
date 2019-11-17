@@ -42,7 +42,7 @@ A schema is just a map with a `:t` property that's been registered as a type. `n
 
 In addition to types, some extra modifiers can be added, depending on what type you're working with.
 
-## Enum
+### Enum
 
 Any schema can be annotated with `:enum`, which should be a tuple of allowed values.
 
@@ -51,7 +51,7 @@ Any schema can be annotated with `:enum`, which should be a tuple of allowed val
 # => {:message "\"d\" is not one of [1, :a, \"c\"]" ...}
 ```
 
-## Maps
+### Maps
 
 Map schemas can be annotated with `:required` properties, and `:closed`, which defaults to false.
 
@@ -63,7 +63,7 @@ Map schemas can be annotated with `:required` properties, and `:closed`, which d
 # => {:message "a is not an allowed property" ...}
 ```
 
-## Constraints
+### Constraints
 
 Constraints are additional rules that can be included on a schema which reference parts of the data and impose constraints.
 
