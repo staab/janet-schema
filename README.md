@@ -14,7 +14,7 @@ A schema library for Janet, inspired by plumatic/schema and jsonschema.
 Import with:
 
 ```
-(use staab.schema/schema)
+(use schema)
 ```
 
 ## Basic

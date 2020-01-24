@@ -1,5 +1,5 @@
-(use staab.assert/assert)
-(use staab.schema/schema)
+(use assert)
+(use schema)
 
 (assert=
  {:code :not-eq

@@ -1,6 +1,6 @@
 (use local/utils)
-(use staab.multimethod/multimethod)
-(import staab.pseudo-set/pseudo-set :as set)
+(use multimethod)
+(import pseudo-set :as set)
 
 
 # -----------------------------------------------------------------------------

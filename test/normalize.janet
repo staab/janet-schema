@@ -1,5 +1,5 @@
-(use staab.assert/assert)
-(use staab.schema/schema)
+(use assert)
+(use schema)
 
 # Handles tuples, and does not recur
 (assert= (normalize [{:x :int}]) {:t :seq :items {:x :int}})
